@@ -1,0 +1,30 @@
+--- 
+hosts: webservers
+tasks:  
+- name: install nginx    
+  action: apt name=nginx state=installed
+
+- name: copy nginx config    
+  action: copy src=dhcp/dhcpd.conf dest=/etc/dhcp/dhcpd.conf    
+  notify: restart dhcp
+
+- name: start nginx    
+  action: service name=nginx state=started enabled=yes
+
+- name: checkout django-app    
+  action: git repo=git@github.com:knoxknot/django-app.git dest=/opt/apps/knox force=no
+
+notify:      
+  - migrate db      
+  - generate static      
+  - restart nginx
+ 
+handlers:
+ - name: migrate db    
+   action: command chdir=/opt/apps/knox ./manage.py migrate –all
+   
+ - name: generate static    
+   action: command chdir=/opt/apps/knox ./manage.py  collectstatic
+
+ - name: restart dhcp
+   action: service name=dhcpd state=restarted 

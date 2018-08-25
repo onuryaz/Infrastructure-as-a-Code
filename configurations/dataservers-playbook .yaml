@@ -1,0 +1,11 @@
+--- 
+- name: Configure Postgres
+  hosts: dbservers
+  sudo_user: root
+  remote_user: ubuntu
+  vars_files:
+    - dbvars.yaml
+  tasks:
+  - name: install postgres     
+    apt: name=postgresql state=installed
+  

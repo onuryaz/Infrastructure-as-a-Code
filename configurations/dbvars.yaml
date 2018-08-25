@@ -1,0 +1,4 @@
+---
+db_user: sam
+db_name:  knox
+db_password: secret
